@@ -4,9 +4,11 @@
 
 ## 学习理解 vue 和 react 等等模板引擎 虚拟 DOM 必备！
 
-- 流程：将 html 编译成 对象模型
+- 执行：`node index`
 
-* `html` 需要转换的 html 字符串（标签上暂不可写属性）
+### 过程
+
+- `html` 需要转换的 html 字符串（标签上暂不可写属性）
 
 ```html
 <node>
