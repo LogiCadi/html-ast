@@ -10,7 +10,7 @@ const tokens = tokenizer(html)
 console.log('tokens:', tokens)
 
 const ast = parser(tokens)
-console.log('ast:', JSON.stringify(ast))
+console.log('ast:', ast)
 
 /**词法分析*/
 function tokenizer(input) {
