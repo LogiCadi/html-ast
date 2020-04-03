@@ -2,11 +2,13 @@
 //     `  <a>
 //       hel  lo  s
 //      </a> `
-// const html =
-//     `<node p="ok">
-//         hello
-//         <a>这是一个a标签</a>
-//      </node>`
+const html =
+    `<node>
+        hello
+        <a>这是一个a标签
+            <b>bb</b>
+        </a>
+     </node>`
 
 // const AST = {
 //     "type": "tag",// tag标签 text文本
@@ -92,72 +94,75 @@ function tokenizer(input) {
     return tokens
 }
 
-const tokens = [
-    { type: 'tagStart', value: 'a' },
-    { type: 'text', value: 'hello' },
-    { type: 'tagEnd', value: 'a' }
-]
+// const tokens = [
+//     { type: 'tagStart', value: 'a' },
+//     { type: 'text', value: 'hello' },
+//     { type: 'tagEnd', value: 'a' }
+// ]
 
-const ss = [
-    {
-        "type": "tag",
-        "value": {
-            "name": "a",
-            "children": [
-                {
-                    "type": "text",
-                    "value": "hello"
-                }
-            ]
-        }
-    }
-]
+// const astOrign = [
+//     {
+//         "type": "tag",
+//         "value": {
+//             "name": "a",
+//             "children": [
+//                 {
+//                     "type": "text",
+//                     "value": "hello"
+//                 }
+//             ]
+//         }
+//     }
+// ]
 
 // 语法分析
 function parser(tokens) {
+    // 抽象语法树 Abstract Syntax Tree
     let ast = []
     let index = 0
 
-    while (index < tokens.length) {
+    function walk() {
         let token = tokens[index]
-        let block
 
+        let node
         if (token.type === 'tagStart') {
             // 标签
             let tagName = token.value
-            block = {
+            node = {
                 type: "tag",
                 value: {
                     name: tagName,
                     children: []
                 }
             }
-            // 子元素
-            let children = []
+            // 解析子元素
             // 跳过左标签
             token = tokens[++index]
-            while (!(token.type === 'tagEnd' && token.value === tagName)) {
-                children.push(token)
-                // 跳过右标签
-                token = tokens[++index]
+            while (token && !(token.type === 'tagEnd' && token.value === tagName)) {
+                node.value.children.push(walk())
+                token = tokens[index]
             }
-
-            block.value.children.push(walk())
         } else {
             // 文本
-            block = {
+            node = {
                 type: "text",
                 value: token.value
             }
-            index++
         }
+
+        index++
+        return node
     }
-    
-    return block
+
+    while (index < tokens.length) {
+        ast.push(walk())
+    }
+
+    return ast
 }
 
-// const tokens = tokenizer(html)
-// console.log(tokens)
+const tokens = tokenizer(html)
+console.log('tokens', tokens)
 
 const ast = parser(tokens)
-// console.log(ast)
+console.log('AST', JSON.stringify(ast))
