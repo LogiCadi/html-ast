@@ -8,7 +8,7 @@
 
 ### 过程
 
-- `html` 需要转换的 html 字符串（标签上暂不可写属性）
+- `html`：需要转换的 html 字符串（标签上暂不可写属性）
 
 ```html
 <node>
@@ -17,7 +17,7 @@
 </node>
 ```
 
-- `tokens = tokenizer(html)` 词法分析，从头到尾逐个分析，提取词单元`token`
+- `tokens`：`tokenizer(html)` 词法分析，从头到尾逐个分析，提取词单元`token`
 
 ```json
 [
@@ -30,7 +30,7 @@
 ]
 ```
 
-- `ast = parser(tokens)` 语法分析，将 tokens 解析成语法树
+- `ast`：`parser(tokens)` 语法分析，将 tokens 解析成DOM对象
 
 ```json
 [
