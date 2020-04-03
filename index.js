@@ -1,73 +1,48 @@
-// const html =
-//     `  <a>
-//       hel  lo  s
-//      </a> `
 const html =
     `<node>
         hello
         <a>这是一个a标签
-            <b>bb</b>
         </a>
      </node>`
 
-// const AST = {
-//     "type": "tag",// tag标签 text文本
-//     "value": {
-//         "name": "node",// 标签的名字
-//         "attr": {// 标签属性
-//             "p": "ok"
-//         },
-//         "children": [
-//             {
-//                 "type": "text",
-//                 "value": "hello"
-//             }, {
-//                 "type": "tag",
-//                 "value": {
-//                     "name": "a",
-//                     "attr": null,
-//                     "children": [
-//                         {
-//                             "type": "text",
-//                             "value": "这是一个a标签"
-//                         }
-//                     ]
-//                 }
-//             }
-//         ],
-//     }
-// }
+// 任务：将html String转化为AST 抽象语法树 虚拟DOM 对象数组
+const tokens = tokenizer(html)
+console.log('tokens:', tokens)
 
-// 任务：将html String转化为AST 抽象语法树 即 虚拟DOM
+const ast = parser(tokens)
+console.log('ast:', JSON.stringify(ast))
 
-// 词法分析
+/**词法分析*/
 function tokenizer(input) {
+    // 分词单元数组
     let tokens = []
+    // 指针
     let index = 0
 
     while (index < input.length) {
         let char = input[index]
 
         if (char === '<') {
-            // 标签
+            // 这是个标签
             // 跳过<
             char = input[++index]
             let type
             if (char !== '/') {
-                // 标签头
+                // 这是个标签头
                 type = 'tagStart'
             } else {
-                // 标签尾
+                // 这是个标签尾
                 // 跳过/
                 char = input[++index]
                 type = 'tagEnd'
             }
-            // 标签内容
+            // 提取标签名字
             let value = ''
             while (char !== '>') {
                 value += char
                 char = input[++index]
             }
+            // 添加一个token
             tokens.push({
                 type,
                 value
@@ -75,7 +50,7 @@ function tokenizer(input) {
             // 跳过>
             index++
         } else {
-            // 文本
+            // 这是个文本
             let value = ''
             while (char && char !== '<') {
                 value += char
@@ -94,28 +69,7 @@ function tokenizer(input) {
     return tokens
 }
 
-// const tokens = [
-//     { type: 'tagStart', value: 'a' },
-//     { type: 'text', value: 'hello' },
-//     { type: 'tagEnd', value: 'a' }
-// ]
-
-// const astOrign = [
-//     {
-//         "type": "tag",
-//         "value": {
-//             "name": "a",
-//             "children": [
-//                 {
-//                     "type": "text",
-//                     "value": "hello"
-//                 }
-//             ]
-//         }
-//     }
-// ]
-
-// 语法分析
+/**语法分析*/
 function parser(tokens) {
     // 抽象语法树 Abstract Syntax Tree
     let ast = []
@@ -129,7 +83,7 @@ function parser(tokens) {
             // 标签
             let tagName = token.value
             node = {
-                type: "tag",
+                type: 'tag',
                 value: {
                     name: tagName,
                     children: []
@@ -145,7 +99,7 @@ function parser(tokens) {
         } else {
             // 文本
             node = {
-                type: "text",
+                type: 'text',
                 value: token.value
             }
         }
@@ -160,9 +114,3 @@ function parser(tokens) {
 
     return ast
 }
-
-const tokens = tokenizer(html)
-console.log('tokens', tokens)
-
-const ast = parser(tokens)
-console.log('AST', JSON.stringify(ast))
